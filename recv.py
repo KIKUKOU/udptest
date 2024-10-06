@@ -4,23 +4,28 @@ import socket
 parser = argparse.ArgumentParser(description='UDP通信のテストプログラム（受信側）')
 parser.add_argument('-p', '--port', type=int, default=8080, help='受信するポート（デフォルトは8080）')
 args = parser.parse_args()
-port = args.port
 
-# ipv4を使うので、AF_INET
-# udp通信を使いたいので、SOCK_DGRAM
+port = args.port
+timeout = 0.1
+
+
+# ipv4での通信⇒AF_INET
+# udp通信⇒SOCK_DGRAM
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.settimeout(0.1)
-# ブロードキャストするときは255.255.255.255と指定せずに空文字
+sock.settimeout(timeout)
+# アドレスを指定せずとにかく流れてきたものを受信する
 sock.bind(('', port))
 try:
     while True:
-        # データを待ち受け
+        # データ受信
         try:
-            rcv_data, addr = sock.recvfrom(1024)
+            recv_data, addr = sock.recvfrom(1024)
+            recv_data = recv_data.decode()
         except socket.timeout:
             continue
 
-        print('recv : {}  from {} to port ({})'.format(rcv_data.decode(), addr, port))
+        # タイムアウトせず受信できた回のみ受信データを出力
+        print('recv : {} from {}:{}'.format(recv_data, addr[0], addr[1]))
 
 except KeyboardInterrupt:
     sock.close()
