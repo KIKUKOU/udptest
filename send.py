@@ -61,7 +61,7 @@ if self_port != -1:
 for n in range(num):
     t = datetime.datetime.now(JST).strftime('%x %X.%f %z(%Z)')
     send_data = '{} host {}:{}'.format(t, str(host_addr), host_port)
-    print(send_data)
+    print('send : {}'.format(send_data))
     send_data = send_data.encode()
     sock.sendto(send_data, (str(host_addr), host_port))
     if n < num - 1:

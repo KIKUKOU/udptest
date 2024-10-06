@@ -3,9 +3,11 @@ import socket
 
 parser = argparse.ArgumentParser(description='UDP通信のテストプログラム（受信側）')
 parser.add_argument('-p', '--port', type=int, default=8080, help='受信するポート（デフォルトは8080）')
+parser.add_argument('-m', '--message', action='store_true')
 args = parser.parse_args()
 
 port = args.port
+is_only_massage = args.message
 timeout = 0.1
 
 
@@ -25,7 +27,10 @@ try:
             continue
 
         # タイムアウトせず受信できた回のみ受信データを出力
-        print('recv : {} from {}:{}'.format(recv_data, addr[0], addr[1]))
+        if is_only_massage:
+            print('recv : {}'.format(recv_data))
+        else:
+            print('recv : {} | from {}:{}'.format(recv_data, addr[0], addr[1]))
 
 except KeyboardInterrupt:
     sock.close()
