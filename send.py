@@ -33,10 +33,10 @@ interval = args.interval
 
 # udp通信のソケット設定
 if host_addr.version == IPv4:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, proto=17)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     print('UDP IPv4 from {}'.format(str(self_addr)))
 elif host_addr.version == IPv6:
-    sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM, proto=17)
+    sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     print('UDP IPv4 from {}'.format(str(self_addr)))
 else:
     print('Input is not IP address.')
@@ -49,6 +49,7 @@ if str(host_addr)[-3:] == '255':
     print('Broadcast Mode')
 elif host_addr.is_multicast:
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, socket.inet_aton(str(self_addr)))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 1)
     print('Multicast Mode')
 else:
     print('Unicast Mode')
