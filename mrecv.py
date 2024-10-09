@@ -3,10 +3,12 @@ import socket
 import struct
 
 parser = argparse.ArgumentParser(description='UDP通信のテストプログラム（受信側）')
+parser.add_argument('-H', '--host', default='224.0.0.1', help='送信元のホストIP（デフォルトは224.0.0.1）')
 parser.add_argument('-p', '--port', type=int, default=8080, help='受信するポート（デフォルトは8080）')
 parser.add_argument('-m', '--message', action='store_true')
 args = parser.parse_args()
 
+multicast_group = args.host
 port = args.port
 is_only_massage = args.message
 timeout = 0.1
@@ -19,7 +21,7 @@ sock.settimeout(timeout)
 sock.bind(('', port))
 
 # マルチキャストグループへの参加
-multicast_group = '225.0.0.1'
+
 group = socket.inet_aton(multicast_group)
 mreq = struct.pack('4sL', group, socket.INADDR_ANY)
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
